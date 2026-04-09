@@ -16,7 +16,7 @@ public class StatsService {
 
     public void saveHit(EndpointHitDto dto) {
         EndpointHit hit = EndpointHitMapper.toEntity(dto);
-        hit.setRequestTime(LocalDateTime.parse(dto.getRequestTime(), formatter));
+        hit.setTimestamp(LocalDateTime.parse(dto.getTimestamp(), formatter));
         hitRepository.save(hit);
     }
 
