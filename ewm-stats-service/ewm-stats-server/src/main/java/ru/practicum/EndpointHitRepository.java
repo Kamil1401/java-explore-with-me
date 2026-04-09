@@ -12,7 +12,7 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
     @Query("""
               SELECT   new ru.practicum.ViewStats(e.app, e.uri, COUNT(e.id))
                 FROM   EndpointHit e
-               WHERE   e.requestTime BETWEEN :periodStart AND :periodEnd
+               WHERE   e.timestamp BETWEEN :periodStart AND :periodEnd
                  AND   (:uris IS NULL OR e.uri IN :uris)
             GROUP BY   e.app, e.uri
             """)
@@ -22,7 +22,7 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
     @Query("""
               SELECT   new ru.practicum.ViewStats(e.app, e.uri, COUNT(DISTINCT e.id))
                 FROM   EndpointHit e
-               WHERE   e.requestTime BETWEEN :periodStart AND :periodEnd
+               WHERE   e.timestamp BETWEEN :periodStart AND :periodEnd
                  AND   (:uris IS NULL OR e.uri IN :uris)
             GROUP BY   e.app, e.uri
             """)
