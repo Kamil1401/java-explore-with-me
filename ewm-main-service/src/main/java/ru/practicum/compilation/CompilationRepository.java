@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface CompilationRepository extends JpaRepository<Compilation, Long> {
 
-    Optional<Compilation> findByName(String name);
+    Optional<Compilation> findByTitle(String title);
 
     @Query(value = """
             SELECT    *

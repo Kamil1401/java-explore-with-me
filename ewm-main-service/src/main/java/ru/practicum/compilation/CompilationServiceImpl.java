@@ -33,7 +33,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto createCompilation(NewCompilationDto dto) {
         Compilation compilation = CompilationMapper.toEntity(dto);
 
-        if (compilationRepository.findByName(compilation.getTitle()).isPresent()) {
+        if (compilationRepository.findByTitle(compilation.getTitle()).isPresent()) {
             throw new DuplicateException("Категория с таким именем уже существует");
         }
 
@@ -59,7 +59,7 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation compilation = getCompilationById(compilationId);
 
         if (request.getTitle() != null) {
-            if (compilationRepository.findByName(compilation.getTitle()).isPresent()) {
+            if (compilationRepository.findByTitle(compilation.getTitle()).isPresent()) {
                 throw new DuplicateException("Категория с таким именем уже существует");
             }
             compilation.setTitle(request.getTitle());
