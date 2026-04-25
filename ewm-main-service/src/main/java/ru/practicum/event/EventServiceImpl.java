@@ -369,7 +369,7 @@ public class EventServiceImpl implements EventService {
         List<ViewStats> stats = statsClient.getStats(LocalDateTime.now().minusYears(1), LocalDateTime.now(),
                 List.of(uri), true);
 
-        Long views = stats.isEmpty() ? 0 : stats.get(0).getHits();
+        Long views = stats.isEmpty() ? 0 : stats.getFirst().getHits();
 
         EventFullDto dto = EventMapper.toDto(event);
         dto.setViews(views);

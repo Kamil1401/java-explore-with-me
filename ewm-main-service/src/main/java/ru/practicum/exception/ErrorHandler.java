@@ -160,7 +160,7 @@ public class ErrorHandler {
         );
     }
 
-    @ExceptionHandler(EventCapacityException.class)
+    @ExceptionHandler(EventStateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleEventStateException(EventStateException exception) {
         return new ApiError(
