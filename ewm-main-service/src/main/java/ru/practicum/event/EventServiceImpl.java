@@ -355,7 +355,6 @@ public class EventServiceImpl implements EventService {
             dto.setViews(views);
             result.add(dto);
         }
-        
         if (result.isEmpty()) {
             return List.of();
         }
