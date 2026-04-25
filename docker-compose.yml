@@ -1,11 +1,4 @@
 services:
-  stats-db:
-    image: postgres:16.1
-    environment:
-      POSTGRES_DB: stats
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-
   stats-server:
     build: ./ewm-stats-service/ewm-stats-server
     ports:
@@ -13,10 +6,10 @@ services:
     depends_on:
       - stats-db
 
-  ewm-db:
+  stats-db:
     image: postgres:16.1
     environment:
-      POSTGRES_DB: ewm
+      POSTGRES_DB: stats
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
 
@@ -27,3 +20,10 @@ services:
     depends_on:
       - ewm-db
       - stats-server
+
+  ewm-db:
+    image: postgres:16.1
+    environment:
+      POSTGRES_DB: ewm
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
