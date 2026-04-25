@@ -328,8 +328,7 @@ public class EventServiceImpl implements EventService {
 
         if (!uris.isEmpty()) {
             List<ViewStats> stats = statsClient.getStats(LocalDateTime.now().minusYears(1), LocalDateTime.now(),
-                    uris, true
-            );
+                    uris, true);
 
             viewsMap = stats.stream()
                     .collect(Collectors.toMap(ViewStats::getUri, ViewStats::getHits));
@@ -337,7 +336,7 @@ public class EventServiceImpl implements EventService {
 
         EndpointHitDto hit = new EndpointHitDto();
         hit.setApp("ewm-main-service");
-        hit.setUri(request.getRequestURI());
+        hit.setUri(request.getRequestURI().split("\\?")[0]);
         hit.setIp(request.getRemoteAddr());
         hit.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
@@ -370,14 +369,14 @@ public class EventServiceImpl implements EventService {
         List<ViewStats> stats = statsClient.getStats(LocalDateTime.now().minusYears(1), LocalDateTime.now(),
                 List.of(uri), true);
 
-        Long views = stats.isEmpty() ? 0 : stats.getFirst().getHits();
+        Long views = stats.isEmpty() ? 0 : stats.get(0).getHits();
 
         EventFullDto dto = EventMapper.toDto(event);
         dto.setViews(views);
 
         EndpointHitDto hit = new EndpointHitDto();
         hit.setApp("ewm-main-service");
-        hit.setUri(request.getRequestURI());
+        hit.setUri(request.getRequestURI().split("\\?")[0]);
         hit.setIp(request.getRemoteAddr());
         hit.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
