@@ -298,8 +298,8 @@ public class EventServiceImpl implements EventService {
 
         List<Event> events = eventRepository.findAll(users, states, categories, rangeStart, rangeEnd, from, size);
 
-        return events.stream().
-                map(EventMapper::toDto)
+        return events.stream()
+                .map(EventMapper::toDto)
                 .toList();
     }
 
