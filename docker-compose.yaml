@@ -1,16 +1,28 @@
 services:
+  stats-db:
+    image: postgres:16.1
+    environment:
+      POSTGRES_DB: stats
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   stats-server:
     build: ./ewm-stats-service/ewm-stats-server
     ports:
       - "9090:9090"
     depends_on:
-      - stats-db:
-          condition: service_healthy
+      stats-db:
+        condition: service_healthy
 
-  stats-db:
+  ewm-db:
     image: postgres:16.1
     environment:
-      POSTGRES_DB: stats
+      POSTGRES_DB: ewm
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     healthcheck:
@@ -24,18 +36,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - ewm-db:
-          condition: service_healthy
-      - stats-server
-
-  ewm-db:
-    image: postgres:16.1
-    environment:
-      POSTGRES_DB: ewm
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      ewm-db:
+        condition: service_healthy
+      stats-server:
+        condition: service_started
