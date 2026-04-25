@@ -1,5 +1,6 @@
 package ru.practicum.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -167,6 +168,18 @@ public class ErrorHandler {
                 List.of(),
                 "Ошибка состояния события",
                 exception.getMessage(),
+                HttpStatus.CONFLICT,
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        return new ApiError(
+                List.of(),
+                "Конфликт данных",
+                "Пользователь с таким email уже существует",
                 HttpStatus.CONFLICT,
                 LocalDateTime.now()
         );

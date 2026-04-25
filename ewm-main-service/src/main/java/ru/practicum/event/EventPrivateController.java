@@ -22,7 +22,9 @@ public class EventPrivateController {
 
 
     @PostMapping("/{userId}/events")
-    public ResponseEntity<EventFullDto> createEvent(@Valid @RequestBody NewEventDto dto, @PathVariable Long userId) {
+    public ResponseEntity<EventFullDto> createEvent(@Valid @RequestBody NewEventDto dto,
+                                                    @PathVariable Long userId) {
+
         EventFullDto result = eventService.createEvent(dto, userId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -31,8 +33,8 @@ public class EventPrivateController {
 
     @GetMapping("/{userId}/events")
     public List<EventFullDto> getUserEvents(@PathVariable(required = false) Long userId,
-                                        @RequestParam(defaultValue = "0") int from,
-                                        @RequestParam(defaultValue = "10") int size) {
+                                            @RequestParam(defaultValue = "0") int from,
+                                            @RequestParam(defaultValue = "10") int size) {
 
         return eventService.getUserEvents(userId, from, size);
     }
