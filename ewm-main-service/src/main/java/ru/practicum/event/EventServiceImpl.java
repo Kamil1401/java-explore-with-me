@@ -298,6 +298,10 @@ public class EventServiceImpl implements EventService {
 
         List<Event> events = eventRepository.findAll(users, states, categories, rangeStart, rangeEnd, from, size);
 
+        if (events.isEmpty()) {
+            return List.of();
+        }
+
         return events.stream()
                 .map(EventMapper::toDto)
                 .toList();
@@ -350,6 +354,10 @@ public class EventServiceImpl implements EventService {
             Long views = viewsMap.getOrDefault("/events/" + event.getId(), 0L);
             dto.setViews(views);
             result.add(dto);
+        }
+        
+        if (result.isEmpty()) {
+            return List.of();
         }
 
         return result;

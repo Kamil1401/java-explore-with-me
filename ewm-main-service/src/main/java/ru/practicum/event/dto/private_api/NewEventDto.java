@@ -33,7 +33,7 @@ public class NewEventDto {
     @NotNull
     @EventDateAfterTwoHours
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventData;
+    private LocalDateTime eventDate;
 
     @NotNull
     private Location location;

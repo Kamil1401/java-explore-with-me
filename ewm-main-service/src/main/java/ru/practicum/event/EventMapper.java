@@ -21,7 +21,7 @@ public class EventMapper {
         Event event = new Event();
         event.setAnnotation(dto.getAnnotation());
         event.setDescription(dto.getDescription());
-        event.setEventDate(dto.getEventData());
+        event.setEventDate(dto.getEventDate());
         event.setLocation(dto.getLocation());
         event.setPaid(defaultIfNull(dto.getPaid(), false));
         event.setParticipantLimit(defaultIfNull(dto.getParticipantLimit(), 0));
