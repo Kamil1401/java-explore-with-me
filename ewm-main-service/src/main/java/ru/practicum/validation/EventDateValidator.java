@@ -13,6 +13,6 @@ public class EventDateValidator implements ConstraintValidator<EventDateAfterTwo
             return true;
         }
 
-        return value.isAfter(LocalDateTime.now().plusHours(2));  //!value.isBefore(LocalDateTime.now().plusHours(2))
+        return !value.isBefore(LocalDateTime.now().plusHours(2));
     }
 }
