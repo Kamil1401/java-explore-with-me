@@ -55,6 +55,7 @@ public class EventServiceImpl implements EventService {
         event.setCategory(categoryService.getCategoryById(dto.getCategory()));
         event.setInitiator(user);
         event.setState(State.PENDING);
+        event.setViews(0L);
 
         Event savedEvent = eventRepository.save(event);
 
