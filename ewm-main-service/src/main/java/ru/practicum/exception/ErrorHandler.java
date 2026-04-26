@@ -3,7 +3,6 @@ package ru.practicum.exception;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -42,29 +41,14 @@ public class ErrorHandler {
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiError> handleValidationException(MethodArgumentNotValidException exception) {
 
-        List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
-
-        boolean eventDateViolation = fieldErrors.stream()
-                .anyMatch(error ->
-                        "EventDateAfterTwoHours".equals(error.getCode()));
-
-        List<String> errors = fieldErrors.stream()
+        List<String> errors = exception.getBindingResult().getFieldErrors().stream()
                 .map(error -> "Поле: " + error.getField()
                         + ". Сообщение: " + error.getDefaultMessage()
                         + ". Переданное значение: " + error.getRejectedValue())
                 .toList();
-
-        if (eventDateViolation) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(
-                    List.of(),
-                    exception.getMessage(),
-                    "Недостаточно времени",
-                    HttpStatus.CONFLICT,
-                    LocalDateTime.now()
-            ));
-        }
 
         return ResponseEntity.badRequest().body(new ApiError(
                 errors,
