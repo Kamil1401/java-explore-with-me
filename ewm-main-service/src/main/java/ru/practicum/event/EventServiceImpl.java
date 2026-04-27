@@ -2,6 +2,9 @@ package ru.practicum.event;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.EndpointHitDto;
@@ -322,11 +325,25 @@ public class EventServiceImpl implements EventService {
         if (text != null && text.isBlank()) {
             text = null;
         }
+        if (categories == null || categories.isEmpty()) {
+            categories = null;
+        }
 
-        categories = (categories == null || categories.isEmpty()) ? null : categories;
+        Sort sortObj;
+
+        if (sort.equals("EVENT_DATE")) {
+            sortObj = Sort.by(Sort.Direction.DESC, "eventDate");
+        } else if (sort.equals("VIEWS")) {
+            sortObj = Sort.by(Sort.Direction.DESC, "views");
+        } else {
+            sortObj = Sort.unsorted();
+        }
+
+        int page = from / size;
+        Pageable pageable = PageRequest.of(page, size, sortObj);
 
         List<Event> events = eventRepository.searchPublicEvents(text, categories, paid, rangeStart, rangeEnd,
-                onlyAvailable, sort, from, size);
+                onlyAvailable, pageable);
 
         List<String> uris = events.stream()
                 .map(e -> "/events/" + e.getId())
