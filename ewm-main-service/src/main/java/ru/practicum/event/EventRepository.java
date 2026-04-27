@@ -47,15 +47,15 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query(value = """
     SELECT *
-    FROM  events
-    WHERE state = 'PUBLISHED'
-      AND (:text IS NULL OR LOWER(annotation) LIKE LOWER(CONCAT('%', :text, '%'))
+    FROM   events
+    WHERE  state = 'PUBLISHED'
+      AND  (CAST(:text AS TEXT) IS NULL OR LOWER(annotation) LIKE LOWER(CONCAT('%', :text, '%'))
                          OR LOWER(description) LIKE LOWER(CONCAT('%', :text, '%')))
-      AND (:categories IS NULL OR category_id IN (:categories))
-      AND (:paid IS NULL OR paid = :paid)
-      AND (:rangeStart IS NULL OR event_date >= :rangeStart)
-      AND (:rangeEnd IS NULL OR event_date <= :rangeEnd)
-      AND (:onlyAvailable = false OR participant_limit = 0 OR confirmed_requests < participant_limit)
+      AND  (CAST(:categories AS BIGINT[]) IS NULL OR category_id IN (:categories))
+      AND  (CAST(:paid AS BOOLEAN) IS NULL OR paid = :paid)
+      AND  (CAST(:rangeStart AS TIMESTAMP) IS NULL OR event_date >= :rangeStart)
+      AND  (CAST(:rangeEnd AS TIMESTAMP) IS NULL OR event_date <= :rangeEnd)
+      AND  (:onlyAvailable IS NOT TRUE OR participant_limit = 0 OR confirmed_requests < participant_limit)
     ORDER BY CASE WHEN :sort = 'EVENT_DATE' THEN event_date END, CASE WHEN :sort = 'VIEWS' THEN views END
     LIMIT :size OFFSET :from
     """, nativeQuery = true)

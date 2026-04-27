@@ -316,8 +316,11 @@ public class EventServiceImpl implements EventService {
             LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort,
                                                int from, int size, HttpServletRequest request) {
 
-        if (rangeStart == null && rangeEnd == null) {
+        if (rangeStart == null) {
             rangeStart = LocalDateTime.now();
+        }
+        if (text != null && text.isBlank()) {
+            text = null;
         }
 
         categories = (categories == null || categories.isEmpty()) ? null : categories;
@@ -355,9 +358,6 @@ public class EventServiceImpl implements EventService {
             Long views = viewsMap.getOrDefault("/events/" + event.getId(), 0L);
             dto.setViews(views);
             result.add(dto);
-        }
-        if (result.isEmpty()) {
-            return List.of();
         }
 
         return result;
