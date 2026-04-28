@@ -9,6 +9,7 @@ public class EndpointHitMapper {
         hit.setApp(dto.getApp());
         hit.setUri(dto.getUri());
         hit.setIp(dto.getIp());
+        hit.setTimestamp(dto.getTimestamp());
 
         return hit;
     }

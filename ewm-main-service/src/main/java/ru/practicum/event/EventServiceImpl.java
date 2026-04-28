@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.EndpointHitDto;
@@ -32,7 +33,6 @@ import ru.practicum.user.User;
 import ru.practicum.user.UserService;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -319,21 +319,11 @@ public class EventServiceImpl implements EventService {
             LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort,
                                                int from, int size, HttpServletRequest request) {
 
-        if (rangeStart == null) {
-            rangeStart = LocalDateTime.now();
-        }
-        if (text != null && text.isBlank()) {
-            text = null;
-        }
-        if (categories == null || categories.isEmpty()) {
-            categories = null;
-        }
-
         Sort sortObj;
 
-        if (sort.equals("EVENT_DATE")) {
+        if ("EVENT_DATE".equals(sort)) {
             sortObj = Sort.by(Sort.Direction.DESC, "eventDate");
-        } else if (sort.equals("VIEWS")) {
+        } else if ("VIEWS".equals(sort)) {
             sortObj = Sort.by(Sort.Direction.DESC, "views");
         } else {
             sortObj = Sort.unsorted();
@@ -342,8 +332,16 @@ public class EventServiceImpl implements EventService {
         int page = from / size;
         Pageable pageable = PageRequest.of(page, size, sortObj);
 
-        List<Event> events = eventRepository.searchPublicEvents(text, categories, paid, rangeStart, rangeEnd,
-                onlyAvailable, pageable);
+        Specification<Event> spec = Specification
+                .where(EventSpecifications.published())
+                .and(EventSpecifications.textLike(text))
+                .and(EventSpecifications.inCategories(categories))
+                .and(EventSpecifications.paid(paid))
+                .and(EventSpecifications.rangeStart(rangeStart))
+                .and(EventSpecifications.rangeEnd(rangeEnd))
+                .and(EventSpecifications.onlyAvailable(onlyAvailable));
+
+        List<Event> events = eventRepository.findAll(spec, pageable).getContent();
 
         List<String> uris = events.stream()
                 .map(e -> "/events/" + e.getId())
@@ -363,7 +361,7 @@ public class EventServiceImpl implements EventService {
         hit.setApp("ewm-main-service");
         hit.setUri(request.getRequestURI().split("\\?")[0]);
         hit.setIp(request.getRemoteAddr());
-        hit.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        hit.setTimestamp(LocalDateTime.now());
 
         statsClient.saveHit(hit);
 
@@ -403,15 +401,10 @@ public class EventServiceImpl implements EventService {
         hit.setApp("ewm-main-service");
         hit.setUri(request.getRequestURI().split("\\?")[0]);
         hit.setIp(request.getRemoteAddr());
-        hit.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        hit.setTimestamp(LocalDateTime.now());
 
         statsClient.saveHit(hit);
 
         return dto;
     }
 }
-
-
-
-
-
