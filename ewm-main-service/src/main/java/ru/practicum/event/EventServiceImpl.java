@@ -324,6 +324,13 @@ public class EventServiceImpl implements EventService {
             LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort,
                                                int from, int size, HttpServletRequest request) {
 
+        if (rangeStart != null && rangeEnd != null && rangeEnd.isBefore(rangeStart)) {
+            throw new IllegalArgumentException("Конец диапазона должен быть позже начала");
+        }
+        if (from < 0 || size < 0) {
+            throw new IllegalArgumentException("Параметры пагинации не могут быть отрицательными");
+        }
+
         Sort sortObj;
 
         if ("EVENT_DATE".equals(sort)) {

@@ -175,11 +175,23 @@ public class ErrorHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiError handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+    public ApiError handleDataIntegrityViolation(DataIntegrityViolationException exception) {
         return new ApiError(
                 List.of(),
                 "Конфликт данных",
-                ex.getMostSpecificCause().getMessage(),
+                exception.getMostSpecificCause().getMessage(),
+                HttpStatus.CONFLICT,
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleIllegalArgumentException(IllegalArgumentException exception) {
+        return new ApiError(
+                List.of(),
+                exception.getMessage(),
+                "Некорректный запрос",
                 HttpStatus.CONFLICT,
                 LocalDateTime.now()
         );
