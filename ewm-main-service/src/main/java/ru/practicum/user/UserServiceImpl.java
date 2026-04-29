@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
             return List.of();
         }
 
-        int page = from/size;
+        int page = from / size;
         Pageable pageable = PageRequest.of(page, size, Sort.by("id"));
 
         List<User> users = userRepository.findUsers(ids, pageable);

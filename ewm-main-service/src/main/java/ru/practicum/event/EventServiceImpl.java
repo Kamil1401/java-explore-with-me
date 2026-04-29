@@ -201,7 +201,7 @@ public class EventServiceImpl implements EventService {
         }
         userService.getUserById(userId);
 
-        int page = from/size;
+        int page = from / size;
         Pageable pageable = PageRequest.of(page, size, Sort.by("eventDate").ascending());
 
         List<Event> events = eventRepository.findUserEvents(userId, pageable);
