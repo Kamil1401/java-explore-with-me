@@ -13,7 +13,7 @@ import ru.practicum.StatsClient;
 import ru.practicum.ViewStats;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
-import ru.practicum.enums.AdminStateAction;
+import ru.practicum.event.dto.admin_api.StateAction;
 import ru.practicum.enums.State;
 import ru.practicum.enums.Status;
 import ru.practicum.enums.UserStateAction;
@@ -243,7 +243,7 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateAdminEvent(UpdateEventAdminRequest adminRequest, Long eventId) {
         Event event = getEventById(eventId);
 
-        if (adminRequest.getAdminStateAction() == AdminStateAction.PUBLISH_EVENT) {
+        if (adminRequest.getStateAction() == StateAction.PUBLISH_EVENT) {
             if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
                 throw new EventStateException("До начала события остается менее 1 часа");
             }
@@ -254,7 +254,7 @@ public class EventServiceImpl implements EventService {
             event.setPublishedOn(LocalDateTime.now());
         }
 
-        if (adminRequest.getAdminStateAction() == AdminStateAction.REJECT_EVENT) {
+        if (adminRequest.getStateAction() == StateAction.REJECT_EVENT) {
             if (event.getState() == State.PUBLISHED) {
                 throw new EventStateException("Нельзя отменить опубликованное событие");
             }

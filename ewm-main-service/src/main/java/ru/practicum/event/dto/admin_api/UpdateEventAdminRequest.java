@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.enums.AdminStateAction;
 import ru.practicum.event.Location;
 
 import java.time.LocalDateTime;
@@ -22,6 +21,6 @@ public class UpdateEventAdminRequest {
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
-    private AdminStateAction adminStateAction;
+    private StateAction stateAction;
     private String title;
 }
