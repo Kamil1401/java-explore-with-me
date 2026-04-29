@@ -1,6 +1,9 @@
 package ru.practicum.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.user.dto.NewUserRequest;
 import ru.practicum.user.dto.UserDto;
@@ -33,10 +36,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsers(List<Long> ids, int from, int size) {
-        if (ids != null && ids.isEmpty()) {
+        if (ids == null || ids.isEmpty()) {
             return List.of();
         }
-        List<User> users = userRepository.findUsers(ids, from, size);
+
+        int page = from/size;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id"));
+
+        List<User> users = userRepository.findUsers(ids, pageable);
 
         return users.stream()
                 .map(UserMapper::toDto)

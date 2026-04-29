@@ -1,6 +1,7 @@
 package ru.practicum.event;
 
 import org.springframework.data.jpa.domain.Specification;
+import ru.practicum.enums.State;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,6 +36,28 @@ public class EventSpecifications {
                 return cb.conjunction();
             }
             return root.get("category").get("id").in(categories);
+        };
+    }
+
+
+    public static Specification<Event> inUsers(List<Long> users) {
+        return (root, query, cb) -> {
+            if (users == null || users.isEmpty()) {
+                return cb.conjunction();
+            }
+            return root.get("initiator").get("id").in(users);
+        };
+    }
+
+
+    public static Specification<Event> inStates(List<String> states) {
+        return (root, query, cb) -> {
+            if (states == null || states.isEmpty()) {
+                return cb.conjunction();
+            }
+            return root.get("state").in(states.stream()
+                    .map(State::valueOf)
+                    .toList());
         };
     }
 

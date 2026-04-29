@@ -200,7 +200,11 @@ public class EventServiceImpl implements EventService {
             return List.of();
         }
         userService.getUserById(userId);
-        List<Event> events = eventRepository.findUserEvents(userId, from, size);
+
+        int page = from/size;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("eventDate").ascending());
+
+        List<Event> events = eventRepository.findUserEvents(userId, pageable);
 
         return events.stream()
                 .map(EventMapper::toDto)
@@ -296,15 +300,17 @@ public class EventServiceImpl implements EventService {
                                                     LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                     int from, int size) {
 
-        users = (users == null || users.isEmpty()) ? null : users;
-        states = (states == null || states.isEmpty()) ? null : states;
-        categories = (categories == null || categories.isEmpty()) ? null : categories;
+        int page = from / size;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("eventDate").ascending());
 
-        List<Event> events = eventRepository.findAll(users, states, categories, rangeStart, rangeEnd, from, size);
+        Specification<Event> spec = Specification
+                .where(EventSpecifications.inUsers(users))
+                .and(EventSpecifications.inStates(states))
+                .and(EventSpecifications.inCategories(categories))
+                .and(EventSpecifications.rangeStart(rangeStart))
+                .and(EventSpecifications.rangeEnd(rangeEnd));
 
-        if (events.isEmpty()) {
-            return List.of();
-        }
+        List<Event> events = eventRepository.findAll(spec, pageable).getContent();
 
         return events.stream()
                 .map(EventMapper::toDto)

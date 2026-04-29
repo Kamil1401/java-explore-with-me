@@ -1,5 +1,6 @@
 package ru.practicum.user;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,11 +14,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    @Query(value = """
-    SELECT *
-    FROM users
-    WHERE (:ids IS NULL OR id IN (:ids))
-    LIMIT :size OFFSET :from
-    """, nativeQuery = true)
-    List<User> findUsers(@Param("ids") List<Long> ids, @Param("from") int from, @Param("size") int size);
+    @Query("""
+            SELECT u
+            FROM   User u
+            WHERE  u.id IN (:ids)
+            """)
+    List<User> findUsers(@Param("ids") List<Long> ids, Pageable pageable);
 }
