@@ -33,22 +33,22 @@ public class EventMapper {
 
     public static EventFullDto toDto(Event event) {
         return new EventFullDto(
+                event.getId(),
+                event.getTitle(),
                 event.getAnnotation(),
                 CategoryMapper.toDto(event.getCategory()),
-                event.getConfirmedRequests(),
-                event.getCreatedOn(),
-                event.getDescription(),
-                event.getEventDate(),
-                event.getId(),
-                UserMapper.toShortDto(event.getInitiator()),
-                event.getLocation(),
                 event.getPaid(),
+                event.getEventDate(),
+                UserMapper.toShortDto(event.getInitiator()),
+                event.getViews(),
+                event.getConfirmedRequests(),
+                event.getDescription(),
                 event.getParticipantLimit(),
-                event.getPublishedOn(),
-                event.getRequestModeration(),
                 event.getState(),
-                event.getTitle(),
-                event.getViews()
+                event.getCreatedOn(),
+                event.getPublishedOn(),
+                event.getLocation(),
+                event.getRequestModeration()
         );
     }
 
