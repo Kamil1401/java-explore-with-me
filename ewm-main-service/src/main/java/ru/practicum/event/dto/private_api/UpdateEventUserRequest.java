@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.enums.UserStateAction;
 import ru.practicum.event.Location;
 import ru.practicum.validation.EventDateAfterTwoHours;
 
@@ -36,7 +35,7 @@ public class UpdateEventUserRequest {
     private Integer participantLimit;
 
     private Boolean requestModeration;
-    private UserStateAction userStateAction;
+    private StateAction stateAction;
 
     @Size(min = 3, max = 120)
     private String title;

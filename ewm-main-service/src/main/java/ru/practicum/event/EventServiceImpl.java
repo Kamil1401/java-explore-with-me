@@ -13,10 +13,9 @@ import ru.practicum.StatsClient;
 import ru.practicum.ViewStats;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
-import ru.practicum.event.dto.admin_api.StateAction;
 import ru.practicum.enums.State;
 import ru.practicum.enums.Status;
-import ru.practicum.enums.UserStateAction;
+import ru.practicum.event.dto.private_api.StateAction;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.admin_api.UpdateEventAdminRequest;
@@ -103,12 +102,12 @@ public class EventServiceImpl implements EventService {
         if (request.getRequestModeration() != null) {
             event.setRequestModeration(request.getRequestModeration());
         }
-        if (request.getUserStateAction() != null) {
+        if (request.getStateAction() != null) {
 
-            if (request.getUserStateAction() == UserStateAction.SEND_TO_REVIEW) {
+            if (request.getStateAction() == StateAction.SEND_TO_REVIEW) {
                 event.setState(State.PENDING);
 
-            } else if (request.getUserStateAction() == UserStateAction.CANCEL_REVIEW) {
+            } else if (request.getStateAction() == StateAction.CANCEL_REVIEW) {
                 event.setState(State.CANCELED);
             }
         }
@@ -243,7 +242,7 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateAdminEvent(UpdateEventAdminRequest adminRequest, Long eventId) {
         Event event = getEventById(eventId);
 
-        if (adminRequest.getStateAction() == StateAction.PUBLISH_EVENT) {
+        if (adminRequest.getStateAction() == ru.practicum.event.dto.admin_api.StateAction.PUBLISH_EVENT) {
             if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
                 throw new EventStateException("До начала события остается менее 1 часа");
             }
@@ -254,7 +253,7 @@ public class EventServiceImpl implements EventService {
             event.setPublishedOn(LocalDateTime.now());
         }
 
-        if (adminRequest.getStateAction() == StateAction.REJECT_EVENT) {
+        if (adminRequest.getStateAction() == ru.practicum.event.dto.admin_api.StateAction.REJECT_EVENT) {
             if (event.getState() == State.PUBLISHED) {
                 throw new EventStateException("Нельзя отменить опубликованное событие");
             }
