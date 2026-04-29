@@ -1,7 +1,6 @@
 package ru.practicum.event;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.admin_api.UpdateEventAdminRequest;
