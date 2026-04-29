@@ -1,6 +1,6 @@
 package ru.practicum.event.dto.private_api;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,12 +27,14 @@ public class UpdateEventUserRequest {
     private String description;
 
     @EventDateAfterTwoHours
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
     private Location location;
     private Boolean paid;
+
+    @PositiveOrZero
     private Integer participantLimit;
+
     private Boolean requestModeration;
     private UserStateAction userStateAction;
 
