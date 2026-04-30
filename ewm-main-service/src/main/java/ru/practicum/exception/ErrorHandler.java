@@ -76,14 +76,14 @@ public class ErrorHandler {
     }
 
 
-    @ExceptionHandler(NumberFormatException.class)
+    @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleNumberFormatException(NumberFormatException exception) {
+    public ApiError handleValidationException(ValidationException exception) {
         return new ApiError(
                 List.of(),
-                "Неверный формат переданных данных",
                 exception.getMessage(),
-                HttpStatus.BAD_REQUEST,
+                "Некорректный запрос",
+                HttpStatus.CONFLICT,
                 LocalDateTime.now()
         );
     }
@@ -101,6 +101,7 @@ public class ErrorHandler {
         );
     }
 
+
     @ExceptionHandler(EventModificationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handlePublishedException(EventModificationException exception) {
@@ -112,6 +113,7 @@ public class ErrorHandler {
                 LocalDateTime.now()
         );
     }
+
 
     @ExceptionHandler(StatusChangeException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -125,6 +127,7 @@ public class ErrorHandler {
         );
     }
 
+
     @ExceptionHandler(EventCapacityException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleCapacityException(EventCapacityException exception) {
@@ -136,6 +139,7 @@ public class ErrorHandler {
                 LocalDateTime.now()
         );
     }
+
 
     @ExceptionHandler(RequestCreationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -149,6 +153,7 @@ public class ErrorHandler {
         );
     }
 
+
     @ExceptionHandler(DeleteException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleDeleteException(DeleteException exception) {
@@ -160,6 +165,7 @@ public class ErrorHandler {
                 LocalDateTime.now()
         );
     }
+
 
     @ExceptionHandler(EventStateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -173,6 +179,7 @@ public class ErrorHandler {
         );
     }
 
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleDataIntegrityViolation(DataIntegrityViolationException exception) {
@@ -180,18 +187,6 @@ public class ErrorHandler {
                 List.of(),
                 "Конфликт данных",
                 exception.getMostSpecificCause().getMessage(),
-                HttpStatus.CONFLICT,
-                LocalDateTime.now()
-        );
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleIllegalArgumentException(IllegalArgumentException exception) {
-        return new ApiError(
-                List.of(),
-                exception.getMessage(),
-                "Некорректный запрос",
                 HttpStatus.CONFLICT,
                 LocalDateTime.now()
         );

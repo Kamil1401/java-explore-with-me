@@ -1,6 +1,5 @@
 package ru.practicum.event;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.EventFullDto;
@@ -17,7 +16,7 @@ public class EventAdminController {
 
 
     @PatchMapping("/{eventId}")
-    public EventFullDto updateAdminEvent(@Valid @RequestBody UpdateEventAdminRequest adminRequest,
+    public EventFullDto updateAdminEvent(@RequestBody UpdateEventAdminRequest adminRequest,
                                          @PathVariable Long eventId) {
 
         return eventService.updateAdminEvent(adminRequest, eventId);

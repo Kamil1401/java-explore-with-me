@@ -1,6 +1,5 @@
 package ru.practicum.event.dto.admin_api;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,13 +16,11 @@ public class UpdateEventAdminRequest {
     private String annotation;
     private Long category;
     private String description;
-
-    @FutureOrPresent
     private LocalDateTime eventDate;
     private Location location;
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
-    private StateAction stateAction;
+    private AdminStateAction stateAction;
     private String title;
 }

@@ -14,19 +14,16 @@ import ru.practicum.ViewStats;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
 import ru.practicum.enums.State;
-import ru.practicum.participation_request.Status;
-import ru.practicum.event.dto.private_api.StateAction;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
+import ru.practicum.event.dto.admin_api.AdminStateAction;
 import ru.practicum.event.dto.admin_api.UpdateEventAdminRequest;
-import ru.practicum.event.dto.private_api.EventRequestStatusUpdateRequest;
-import ru.practicum.event.dto.private_api.EventRequestStatusUpdateResult;
-import ru.practicum.event.dto.private_api.NewEventDto;
-import ru.practicum.event.dto.private_api.UpdateEventUserRequest;
+import ru.practicum.event.dto.private_api.*;
 import ru.practicum.exception.*;
 import ru.practicum.participation_request.ParticipationRequest;
 import ru.practicum.participation_request.RequestMapper;
 import ru.practicum.participation_request.RequestService;
+import ru.practicum.participation_request.Status;
 import ru.practicum.participation_request.dto.ParticipationRequestDto;
 import ru.practicum.user.User;
 import ru.practicum.user.UserService;
@@ -242,7 +239,7 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateAdminEvent(UpdateEventAdminRequest adminRequest, Long eventId) {
         Event event = getEventById(eventId);
 
-        if (adminRequest.getStateAction() == ru.practicum.event.dto.admin_api.StateAction.PUBLISH_EVENT) {
+        if (adminRequest.getStateAction() == AdminStateAction.PUBLISH_EVENT) {
             if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
                 throw new EventStateException("До начала события остается менее 1 часа");
             }
@@ -253,7 +250,7 @@ public class EventServiceImpl implements EventService {
             event.setPublishedOn(LocalDateTime.now());
         }
 
-        if (adminRequest.getStateAction() == ru.practicum.event.dto.admin_api.StateAction.REJECT_EVENT) {
+        if (adminRequest.getStateAction() == AdminStateAction.REJECT_EVENT) {
             if (event.getState() == State.PUBLISHED) {
                 throw new EventStateException("Нельзя отменить опубликованное событие");
             }
@@ -261,31 +258,54 @@ public class EventServiceImpl implements EventService {
         }
 
         if (adminRequest.getAnnotation() != null) {
+            if (adminRequest.getAnnotation().length() < 20 || adminRequest.getAnnotation().length() > 2000) {
+                throw new ValidationException("Аннотация должна содержать от 20 до 2000 символов");
+            }
             event.setAnnotation(adminRequest.getAnnotation());
         }
+
         if (adminRequest.getCategory() != null) {
             Category category = categoryService.getCategoryById(adminRequest.getCategory());
             event.setCategory(category);
         }
+
         if (adminRequest.getDescription() != null) {
+            if (adminRequest.getDescription().length() < 20 || adminRequest.getDescription().length() > 7000) {
+                throw new ValidationException("Описание должно содержать от 20 до 7000 символов");
+            }
             event.setDescription(adminRequest.getDescription());
         }
+
         if (adminRequest.getEventDate() != null) {
+            if (adminRequest.getEventDate().isBefore(LocalDateTime.now())) {
+                throw new ValidationException("Дата уже состоялась");
+            }
+            if (adminRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+                throw new EventModificationException("До начала события остаётся менее часа");
+            }
             event.setEventDate(adminRequest.getEventDate());
         }
+
         if (adminRequest.getLocation() != null) {
             event.setLocation(adminRequest.getLocation());
         }
+
         if (adminRequest.getPaid() != null) {
             event.setPaid(adminRequest.getPaid());
         }
+
         if (adminRequest.getParticipantLimit() != null) {
             event.setParticipantLimit(adminRequest.getParticipantLimit());
         }
+
         if (adminRequest.getRequestModeration() != null) {
             event.setRequestModeration(adminRequest.getRequestModeration());
         }
+        
         if (adminRequest.getTitle() != null) {
+            if (adminRequest.getTitle().length() < 3 || adminRequest.getTitle().length() > 120) {
+                throw new ValidationException("Название должно содержать от 3 до 120 символов");
+            }
             event.setTitle(adminRequest.getTitle());
         }
         eventRepository.save(event);
@@ -325,10 +345,10 @@ public class EventServiceImpl implements EventService {
                                                int from, int size, HttpServletRequest request) {
 
         if (rangeStart != null && rangeEnd != null && rangeEnd.isBefore(rangeStart)) {
-            throw new IllegalArgumentException("Конец диапазона должен быть позже начала");
+            throw new ValidationException("Конец диапазона должен быть позже начала");
         }
         if (from < 0 || size < 0) {
-            throw new IllegalArgumentException("Параметры пагинации не могут быть отрицательными");
+            throw new ValidationException("Параметры пагинации не могут быть отрицательными");
         }
 
         Sort sortObj;
