@@ -13,7 +13,6 @@ import ru.practicum.StatsClient;
 import ru.practicum.ViewStats;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
-import ru.practicum.enums.State;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.admin_api.AdminStateAction;

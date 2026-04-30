@@ -2,7 +2,7 @@ package ru.practicum.participation_request;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.enums.State;
+import ru.practicum.event.State;
 import ru.practicum.event.Event;
 import ru.practicum.event.EventRepository;
 import ru.practicum.exception.EventCapacityException;

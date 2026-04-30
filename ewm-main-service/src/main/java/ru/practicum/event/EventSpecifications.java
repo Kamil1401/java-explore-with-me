@@ -1,7 +1,6 @@
 package ru.practicum.event;
 
 import org.springframework.data.jpa.domain.Specification;
-import ru.practicum.enums.State;
 
 import java.time.LocalDateTime;
 import java.util.List;

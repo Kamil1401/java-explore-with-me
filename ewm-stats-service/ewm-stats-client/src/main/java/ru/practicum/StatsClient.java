@@ -6,7 +6,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +13,6 @@ import java.util.Objects;
 @Service
 public class StatsClient {
     private final RestTemplate restTemplate;
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     public StatsClient(RestTemplate restTemplate) {

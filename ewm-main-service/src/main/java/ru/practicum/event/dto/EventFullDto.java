@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.enums.State;
+import ru.practicum.event.State;
 import ru.practicum.event.Location;
 import ru.practicum.user.dto.UserShortDto;
 

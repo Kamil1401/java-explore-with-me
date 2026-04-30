@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.category.Category;
-import ru.practicum.enums.State;
 import ru.practicum.user.User;
 
 import java.time.LocalDateTime;
