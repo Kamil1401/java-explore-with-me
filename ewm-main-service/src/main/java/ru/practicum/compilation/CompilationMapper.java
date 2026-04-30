@@ -11,7 +11,6 @@ public class CompilationMapper {
     public static Compilation toEntity(NewCompilationDto dto) {
         Compilation compilation = new Compilation();
         compilation.setTitle(dto.getTitle());
-        compilation.setPinned(false);
 
         return compilation;
     }

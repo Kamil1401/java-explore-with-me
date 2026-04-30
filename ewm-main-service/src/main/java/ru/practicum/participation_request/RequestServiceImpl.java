@@ -66,7 +66,7 @@ public class RequestServiceImpl implements RequestService {
         userService.getUserById(userId);
         ParticipationRequest request = getRequestById(requestId);
 
-        request.setStatus(Status.REJECTED);
+        request.setStatus(Status.CANCELED);
         ParticipationRequest savedRequest = requestRepository.save(request);
 
         return RequestMapper.toDto(savedRequest);

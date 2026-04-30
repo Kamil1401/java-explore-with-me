@@ -50,7 +50,7 @@ public class CompilationServiceImpl implements CompilationService {
             }
             compilation.setEvents(events);
         }
-
+        compilation.setPinned(dto.getPinned() != null ? dto.getPinned() : false);
         Compilation savedCompilation = compilationRepository.save(compilation);
 
         return CompilationMapper.toDto(savedCompilation);
