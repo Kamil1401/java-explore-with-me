@@ -40,7 +40,7 @@ public class RequestServiceImpl implements RequestService {
         if (event.getState() == State.CANCELED || event.getState() == State.PENDING) {
             throw new RequestCreationException("Нельзя участвовать в неопубликованном событии");
         }
-        if (event.getConfirmedRequests() >= event.getParticipantLimit()) {
+        if (event.getParticipantLimit() > 0 && event.getConfirmedRequests() >= event.getParticipantLimit()) {
             throw new EventCapacityException("Достигнут лимит заявок");
         }
 
