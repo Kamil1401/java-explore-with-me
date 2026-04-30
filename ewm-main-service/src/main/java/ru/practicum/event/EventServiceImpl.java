@@ -249,33 +249,28 @@ public class EventServiceImpl implements EventService {
             event.setState(State.PUBLISHED);
             event.setPublishedOn(LocalDateTime.now());
         }
-
         if (adminRequest.getStateAction() == AdminStateAction.REJECT_EVENT) {
             if (event.getState() == State.PUBLISHED) {
                 throw new EventStateException("Нельзя отменить опубликованное событие");
             }
             event.setState(State.CANCELED);
         }
-
         if (adminRequest.getAnnotation() != null) {
             if (adminRequest.getAnnotation().length() < 20 || adminRequest.getAnnotation().length() > 2000) {
                 throw new ValidationException("Аннотация должна содержать от 20 до 2000 символов");
             }
             event.setAnnotation(adminRequest.getAnnotation());
         }
-
         if (adminRequest.getCategory() != null) {
             Category category = categoryService.getCategoryById(adminRequest.getCategory());
             event.setCategory(category);
         }
-
         if (adminRequest.getDescription() != null) {
             if (adminRequest.getDescription().length() < 20 || adminRequest.getDescription().length() > 7000) {
                 throw new ValidationException("Описание должно содержать от 20 до 7000 символов");
             }
             event.setDescription(adminRequest.getDescription());
         }
-
         if (adminRequest.getEventDate() != null) {
             if (adminRequest.getEventDate().isBefore(LocalDateTime.now())) {
                 throw new ValidationException("Дата уже состоялась");
@@ -285,23 +280,18 @@ public class EventServiceImpl implements EventService {
             }
             event.setEventDate(adminRequest.getEventDate());
         }
-
         if (adminRequest.getLocation() != null) {
             event.setLocation(adminRequest.getLocation());
         }
-
         if (adminRequest.getPaid() != null) {
             event.setPaid(adminRequest.getPaid());
         }
-
         if (adminRequest.getParticipantLimit() != null) {
             event.setParticipantLimit(adminRequest.getParticipantLimit());
         }
-
         if (adminRequest.getRequestModeration() != null) {
             event.setRequestModeration(adminRequest.getRequestModeration());
         }
-        
         if (adminRequest.getTitle() != null) {
             if (adminRequest.getTitle().length() < 3 || adminRequest.getTitle().length() > 120) {
                 throw new ValidationException("Название должно содержать от 3 до 120 символов");
