@@ -44,9 +44,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = getCategoryById(categoryId);
 
         if (dto.getName() != null) {
-            if (categoryRepository.findByName(dto.getName()).isPresent()) {
-                throw new DuplicateException("Категория с таким именем уже существует");
-            }
             category.setName(dto.getName());
         }
         categoryRepository.save(category);

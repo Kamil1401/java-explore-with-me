@@ -12,8 +12,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByName(String name);
 
     @Query(value = """
-            SELECT   *
-            FROM     categories
+            SELECT *
+            FROM   categories
             ORDER BY id
             LIMIT :size OFFSET :from
             """, nativeQuery = true)

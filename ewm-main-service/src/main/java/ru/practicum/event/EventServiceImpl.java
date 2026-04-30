@@ -310,7 +310,7 @@ public class EventServiceImpl implements EventService {
                                                     int from, int size) {
 
         int page = from / size;
-        Pageable pageable = PageRequest.of(page, size, Sort.by("eventDate").ascending());
+        Pageable pageable = PageRequest.of(page, size);
 
         Specification<Event> spec = Specification
                 .where(EventSpecifications.inUsers(users))
