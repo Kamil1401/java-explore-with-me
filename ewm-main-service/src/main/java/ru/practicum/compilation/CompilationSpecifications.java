@@ -8,6 +8,6 @@ public class CompilationSpecifications {
     public static Specification<Compilation> pinned(Boolean pinned) {
         return (root, query, cb) ->
                 pinned == null ? cb.conjunction()
-                        : cb.equal(root.get("paid"), pinned);
+                        : cb.equal(root.get("pinned"), pinned);
     }
 }

@@ -10,11 +10,11 @@ import java.util.List;
 @RequestMapping("compilations")
 @RequiredArgsConstructor
 public class CompilationPublicController {
-    private CompilationService compilationService;
+    private final CompilationService compilationService;
 
 
     @GetMapping
-    public List<CompilationDto> getCompilations(@RequestParam Boolean pinned,
+    public List<CompilationDto> getCompilations(@RequestParam(required = false) Boolean pinned,
                                                 @RequestParam(defaultValue = "0") int from,
                                                 @RequestParam(defaultValue = "10") int size) {
 
