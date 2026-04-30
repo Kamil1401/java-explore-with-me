@@ -2,7 +2,6 @@ package ru.practicum.participation_request;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.enums.Status;
 
 import java.util.List;
 import java.util.Optional;

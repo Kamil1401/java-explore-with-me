@@ -1,6 +1,5 @@
 package ru.practicum.participation_request;
 
-import ru.practicum.enums.Status;
 import ru.practicum.participation_request.dto.ParticipationRequestDto;
 
 import java.util.List;

@@ -14,7 +14,7 @@ import ru.practicum.ViewStats;
 import ru.practicum.category.Category;
 import ru.practicum.category.CategoryService;
 import ru.practicum.enums.State;
-import ru.practicum.enums.Status;
+import ru.practicum.participation_request.Status;
 import ru.practicum.event.dto.private_api.StateAction;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;

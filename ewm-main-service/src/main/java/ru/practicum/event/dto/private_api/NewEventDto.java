@@ -29,6 +29,7 @@ public class NewEventDto {
 
     @NotNull
     @EventDateAfterTwoHours
+    @FutureOrPresent
     private LocalDateTime eventDate;
 
     @NotNull

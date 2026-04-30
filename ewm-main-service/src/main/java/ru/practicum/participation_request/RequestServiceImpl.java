@@ -3,7 +3,6 @@ package ru.practicum.participation_request;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.enums.State;
-import ru.practicum.enums.Status;
 import ru.practicum.event.Event;
 import ru.practicum.event.EventRepository;
 import ru.practicum.exception.EventCapacityException;
@@ -49,7 +48,7 @@ public class RequestServiceImpl implements RequestService {
         request.setRequester(user);
         request.setCreated(LocalDateTime.now());
 
-        if (!event.getRequestModeration()) {
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             request.setStatus(Status.CONFIRMED);
         } else {
             request.setStatus(Status.PENDING);
