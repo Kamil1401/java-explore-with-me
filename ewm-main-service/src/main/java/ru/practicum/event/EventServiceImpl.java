@@ -140,6 +140,10 @@ public class EventServiceImpl implements EventService {
                 }
                 request.setStatus(Status.CONFIRMED);
                 requestDtos.add(RequestMapper.toDto(request));
+
+                if (event.getParticipantLimit() != 0) {
+                    event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                }
             }
 
             return new EventRequestStatusUpdateResult(requestDtos, List.of());
@@ -240,11 +244,11 @@ public class EventServiceImpl implements EventService {
         Event event = getEventById(eventId);
 
         if (adminRequest.getStateAction() == AdminStateAction.PUBLISH_EVENT) {
-            if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-                throw new EventStateException("До начала события остается менее 1 часа");
-            }
             if (event.getState() != State.PENDING) {
                 throw new EventStateException("Публикация возможна только в состоянии ожидания публикации");
+            }
+            if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+                throw new EventStateException("До начала события остается менее 1 часа");
             }
             event.setState(State.PUBLISHED);
             event.setPublishedOn(LocalDateTime.now());

@@ -62,16 +62,11 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation compilation = getCompilationById(compilationId);
 
         if (request.getTitle() != null) {
-            if (compilationRepository.findByTitle(compilation.getTitle()).isPresent()) {
-                throw new DuplicateException("Категория с таким именем уже существует");
-            }
             compilation.setTitle(request.getTitle());
         }
-
         if (request.getPinned() != null) {
             compilation.setPinned(request.getPinned());
         }
-
         if (request.getEvents() != null) {
             Set<Event> events = new HashSet<>(eventRepository.findAllById(request.getEvents()));
 
