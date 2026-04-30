@@ -2,6 +2,7 @@ package ru.practicum;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.exception.StatsValidationException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,9 +21,11 @@ public class StatsService {
 
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
 
+        if (start.isAfter(end)) {
+            throw new StatsValidationException("start не может быть позже end");
+        }
         if (unique) {
             return hitRepository.findUniqueStats(start, end, uris);
-
         } else {
             return hitRepository.findStats(start, end, uris);
         }

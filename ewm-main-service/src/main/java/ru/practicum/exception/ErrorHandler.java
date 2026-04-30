@@ -83,7 +83,7 @@ public class ErrorHandler {
                 List.of(),
                 exception.getMessage(),
                 "Некорректный запрос",
-                HttpStatus.CONFLICT,
+                HttpStatus.BAD_REQUEST,
                 LocalDateTime.now()
         );
     }
