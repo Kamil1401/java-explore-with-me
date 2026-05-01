@@ -43,6 +43,7 @@ public class EventServiceImpl implements EventService {
 
 //    P R I V A T E _ A P I
 
+    @Transactional
     @Override
     public EventFullDto createEvent(NewEventDto dto, Long userId) {
         User user = userService.getUserById(userId);
@@ -61,6 +62,7 @@ public class EventServiceImpl implements EventService {
     }
 
 
+    @Transactional
     @Override
     public EventFullDto updateInitiatorEvent(UpdateEventUserRequest request, Long userId, Long eventId) {
         Event event = getEventById(eventId);
@@ -238,6 +240,7 @@ public class EventServiceImpl implements EventService {
 
 //    A D M I N _ A P I
 
+    @Transactional
     @Override
     public EventFullDto updateAdminEvent(UpdateEventAdminRequest adminRequest, Long eventId) {
         Event event = getEventById(eventId);

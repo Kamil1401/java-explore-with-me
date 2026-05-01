@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.dto.NewCompilationDto;
 import ru.practicum.compilation.dto.UpdateCompilationRequest;
@@ -32,6 +33,7 @@ public class CompilationServiceImpl implements CompilationService {
 
 //    A D M I N _ A P I
 
+    @Transactional
     @Override
     public CompilationDto createCompilation(NewCompilationDto dto) {
         Compilation compilation = CompilationMapper.toEntity(dto);
@@ -57,6 +59,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
 
+    @Transactional
     @Override
     public CompilationDto updateCompilation(UpdateCompilationRequest request, Long compilationId) {
         Compilation compilation = getCompilationById(compilationId);
@@ -81,6 +84,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
 
+    @Transactional
     @Override
     public void deleteCompilation(Long compilationId) {
         getCompilationById(compilationId);

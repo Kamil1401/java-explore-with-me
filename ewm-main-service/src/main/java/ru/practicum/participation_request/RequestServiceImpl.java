@@ -2,6 +2,7 @@ package ru.practicum.participation_request;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.event.State;
 import ru.practicum.event.Event;
 import ru.practicum.event.EventRepository;
@@ -24,6 +25,7 @@ public class RequestServiceImpl implements RequestService {
     private final EventRepository eventRepository;
 
 
+    @Transactional
     @Override
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
         User user = userService.getUserById(userId);
@@ -61,6 +63,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
+    @Transactional
     @Override
     public ParticipationRequestDto cancelParticipationRequest(Long userId, Long requestId) {
         userService.getUserById(userId);

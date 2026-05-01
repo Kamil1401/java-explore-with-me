@@ -2,6 +2,7 @@ package ru.practicum.category;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.event.EventRepository;
@@ -27,6 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 //    A D M I N _ A P I
 
+    @Transactional
     @Override
     public CategoryDto createCategory(NewCategoryDto dto) {
         if (categoryRepository.findByName(dto.getName()).isPresent()) {
@@ -39,6 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
 
+    @Transactional
     @Override
     public CategoryDto updateCategory(CategoryDto dto, Long categoryId) {
         Category category = getCategoryById(categoryId);
@@ -52,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
 
+    @Transactional
     @Override
     public void deleteCategory(Long categoryId) {
         getCategoryById(categoryId);
