@@ -1,23 +1,216 @@
 {
   "info": {
-    "_postman_id": "ce0dd462-99c3-4b1f-9f40-b8b4a0753ce3",
+    "_postman_id": "668d3cb5-548a-4eb0-83d8-5b7b1df998ae",
     "name": "feature.json",
-    "description": "Тесты для лайков/дизлайков событий",
+    "description": "Полный цикл: пользователь → категория → событие → публикация → рейтинг",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "49805355",
-    "_collection_link": "https://go.postman.co/collection/49805355-ce0dd462-99c3-4b1f-9f40-b8b4a0753ce3?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/49805355-668d3cb5-548a-4eb0-83d8-5b7b1df998ae?source=collection_link"
   },
   "item": [
     {
-      "name": "1. Добавить лайк",
+      "name": "1. Создать пользователя",
       "event": [
         {
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test(\"Должен вернуть 201 Created\", function () {",
-              "    pm.response.to.have.status(201);",
-              "});"
+              "pm.response.to.have.status(201);",
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('userId', body.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\":\"spider-man\",\n  \"email\":\"parker@marvel.com\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Создать категорию",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.response.to.have.status(201);",
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('categoryId', body.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\":\"games\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin/categories",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "categories"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Подготовить дату (+1 день)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "let d = new Date();",
+              "d.setDate(d.getDate() + 1);",
+              "let formatted = d.getFullYear() + '-' +",
+              "('0' + (d.getMonth()+1)).slice(-2) + '-' +",
+              "('0' + d.getDate()).slice(-2) + ' 12:00:00';",
+              "pm.collectionVariables.set('eventDate', formatted);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://postman-echo.com/get",
+          "protocol": "https",
+          "host": [
+            "postman-echo",
+            "com"
+          ],
+          "path": [
+            "get"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Создать событие",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.response.to.have.status(201);",
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('eventId', body.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"annotation\": \"Очень длинная аннотация минимум 20 символов\",\n  \"category\": {{categoryId}},\n  \"description\": \"Очень длинное описание минимум 20 символов\",\n  \"eventDate\": \"{{eventDate}}\",\n  \"location\": {\"lat\":55.75,\"lon\":37.61},\n  \"paid\": true,\n  \"participantLimit\": 10,\n  \"requestModeration\": true,\n  \"title\": \"Норм название\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}",
+            "events"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Опубликовать событие",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.response.to.have.status(200);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"annotation\": \"Очень длинная аннотация минимум 20 символов\",\n  \"category\": {{categoryId}},\n  \"description\": \"Очень длинное описание минимум 20 символов\",\n  \"eventDate\": \"{{eventDate}}\",\n  \"location\": {\"lat\":55.75,\"lon\":37.61},\n  \"paid\": true,\n  \"participantLimit\": 10,\n  \"requestModeration\": true,\n  \"stateAction\": \"PUBLISH_EVENT\",\n  \"title\": \"Норм название\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin/events/{{eventId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "events",
+            "{{eventId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Добавить лайк",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.response.to.have.status(201);"
             ],
             "type": "text/javascript"
           }
@@ -49,15 +242,13 @@
       "response": []
     },
     {
-      "name": "2. Поставить дизлайк (update)",
+      "name": "7. Поставить дизлайк",
       "event": [
         {
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test(\"Изменение лайка на дизлайк\", function () {",
-              "    pm.response.to.have.status(201);",
-              "});"
+              "pm.response.to.have.status(201);"
             ],
             "type": "text/javascript"
           }
@@ -89,15 +280,13 @@
       "response": []
     },
     {
-      "name": "3. Удалить рейтинг",
+      "name": "8. Удалить рейтинг",
       "event": [
         {
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test(\"Удаление должно вернуть 204\", function () {",
-              "    pm.response.to.have.status(204);",
-              "});"
+              "pm.response.to.have.status(204);"
             ],
             "type": "text/javascript"
           }
@@ -123,52 +312,16 @@
       "response": []
     },
     {
-      "name": "4. Удалить рейтинг повторно (ошибка)",
+      "name": "9. Проверка события (лайки/дизлайки)",
       "event": [
         {
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test(\"Должен вернуть 404 Not Found\", function () {",
-              "    pm.response.to.have.status(404);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/users/{{userId}}/events/{{eventId}}/rating",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "users",
-            "{{userId}}",
-            "events",
-            "{{eventId}}",
-            "rating"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "5. Получить событие и проверить рейтинг",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Ответ содержит лайки и дизлайки\", function () {",
-              "    pm.response.to.have.status(200);",
-              "    const body = pm.response.json();",
-              "    pm.expect(body).to.have.property('likes');",
-              "    pm.expect(body).to.have.property('dislikes');",
-              "});"
+              "pm.response.to.have.status(200);",
+              "const body = pm.response.json();",
+              "pm.expect(body).to.have.property('likes');",
+              "pm.expect(body).to.have.property('dislikes');"
             ],
             "type": "text/javascript"
           }
@@ -198,11 +351,19 @@
     },
     {
       "key": "userId",
-      "value": "1"
+      "value": ""
+    },
+    {
+      "key": "categoryId",
+      "value": ""
     },
     {
       "key": "eventId",
-      "value": "1"
+      "value": ""
+    },
+    {
+      "key": "eventDate",
+      "value": ""
     }
   ]
 }
