@@ -24,6 +24,8 @@ import ru.practicum.participation_request.RequestMapper;
 import ru.practicum.participation_request.RequestService;
 import ru.practicum.participation_request.Status;
 import ru.practicum.participation_request.dto.ParticipationRequestDto;
+import ru.practicum.rating.EventRatingService;
+import ru.practicum.rating.RatingType;
 import ru.practicum.user.User;
 import ru.practicum.user.UserService;
 
@@ -38,7 +40,15 @@ public class EventServiceImpl implements EventService {
     private final CategoryService categoryService;
     private final UserService userService;
     private final RequestService requestService;
+    private final EventRatingService ratingService;
     private final StatsClient statsClient;
+
+
+    @Override
+    public Event getEventById(Long eventId) {
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"));
+    }
 
 
 //    P R I V A T E _ A P I
@@ -208,7 +218,12 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findUserEvents(userId, pageable);
 
         return events.stream()
-                .map(EventMapper::toDto)
+                .map(event -> {
+                    EventFullDto dto = EventMapper.toDto(event);
+                    dto.setLikes(ratingService.countRating(event.getId(), RatingType.LIKE));
+                    dto.setDislikes(ratingService.countRating(event.getId(), RatingType.DISLIKE));
+                    return dto;
+                })
                 .toList();
     }
 
@@ -221,7 +236,11 @@ public class EventServiceImpl implements EventService {
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new InitiatorRequiredException("Пользователь не является инициатором события");
         }
-        return EventMapper.toDto(event);
+        EventFullDto dto = EventMapper.toDto(event);
+        dto.setLikes(ratingService.countRating(event.getId(), RatingType.LIKE));
+        dto.setDislikes(ratingService.countRating(event.getId(), RatingType.DISLIKE));
+
+        return dto;
     }
 
 
@@ -229,12 +248,6 @@ public class EventServiceImpl implements EventService {
     public List<ParticipationRequestDto> getEventRequestsByInitiator(Long userId, Long eventId) {
 
         return requestService.getEventRequestsByInitiator(userId, eventId);
-    }
-
-
-    public Event getEventById(Long eventId) {
-        return eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие с ID " + eventId + " не найдено"));
     }
 
 
@@ -397,6 +410,8 @@ public class EventServiceImpl implements EventService {
 
         for (Event event : events) {
             EventShortDto dto = EventMapper.toShortDto(event);
+            dto.setLikes(ratingService.countRating(event.getId(), RatingType.LIKE));
+            dto.setDislikes(ratingService.countRating(event.getId(), RatingType.DISLIKE));
 
             Long views = viewsMap.getOrDefault("/events/" + event.getId(), 0L);
             dto.setViews(views);
@@ -423,6 +438,9 @@ public class EventServiceImpl implements EventService {
         Long views = stats.isEmpty() ? 0 : stats.getFirst().getHits();
 
         EventFullDto dto = EventMapper.toDto(event);
+        dto.setLikes(ratingService.countRating(eventId, RatingType.LIKE));
+        dto.setDislikes(ratingService.countRating(eventId, RatingType.DISLIKE));
+
         dto.setViews(views);
 
         EndpointHitDto hit = new EndpointHitDto();

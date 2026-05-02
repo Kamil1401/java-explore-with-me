@@ -1,14 +1,12 @@
 package ru.practicum.event.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,4 +21,6 @@ public class EventShortDto {
     private Boolean paid;
     private String title;
     private Long views;
+    private long likes;
+    private long dislikes;
 }

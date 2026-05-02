@@ -1,0 +1,208 @@
+{
+  "info": {
+    "_postman_id": "ce0dd462-99c3-4b1f-9f40-b8b4a0753ce3",
+    "name": "feature.json",
+    "description": "Тесты для лайков/дизлайков событий",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49805355",
+    "_collection_link": "https://go.postman.co/collection/49805355-ce0dd462-99c3-4b1f-9f40-b8b4a0753ce3?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "1. Добавить лайк",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Должен вернуть 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}/events/{{eventId}}/rating?ratingType=LIKE",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}",
+            "events",
+            "{{eventId}}",
+            "rating"
+          ],
+          "query": [
+            {
+              "key": "ratingType",
+              "value": "LIKE"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Поставить дизлайк (update)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Изменение лайка на дизлайк\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}/events/{{eventId}}/rating?ratingType=DISLIKE",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}",
+            "events",
+            "{{eventId}}",
+            "rating"
+          ],
+          "query": [
+            {
+              "key": "ratingType",
+              "value": "DISLIKE"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Удалить рейтинг",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Удаление должно вернуть 204\", function () {",
+              "    pm.response.to.have.status(204);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}/events/{{eventId}}/rating",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}",
+            "events",
+            "{{eventId}}",
+            "rating"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Удалить рейтинг повторно (ошибка)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Должен вернуть 404 Not Found\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}/events/{{eventId}}/rating",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}",
+            "events",
+            "{{eventId}}",
+            "rating"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Получить событие и проверить рейтинг",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Ответ содержит лайки и дизлайки\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('likes');",
+              "    pm.expect(body).to.have.property('dislikes');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/events/{{eventId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "events",
+            "{{eventId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "userId",
+      "value": "1"
+    },
+    {
+      "key": "eventId",
+      "value": "1"
+    }
+  ]
+}
