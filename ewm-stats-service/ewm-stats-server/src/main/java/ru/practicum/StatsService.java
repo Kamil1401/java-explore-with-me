@@ -2,35 +2,32 @@ package ru.practicum;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.exception.StatsValidationException;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class StatsService {
     private final EndpointHitRepository hitRepository;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     public void saveHit(EndpointHitDto dto) {
         EndpointHit hit = EndpointHitMapper.toEntity(dto);
-        hit.setTimestamp(LocalDateTime.parse(dto.getTimestamp(), formatter));
         hitRepository.save(hit);
     }
 
 
-    public List<ViewStats> getStats(String start, String end, List<String> uris, boolean unique) {
+    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
 
-        LocalDateTime periodStart = LocalDateTime.parse(start, formatter);
-        LocalDateTime periodEnd = LocalDateTime.parse(end, formatter);
-
+        if (start.isAfter(end)) {
+            throw new StatsValidationException("start не может быть позже end");
+        }
         if (unique) {
-            return hitRepository.findUniqueStats(periodStart, periodEnd, uris);
-
+            return hitRepository.findUniqueStats(start, end, uris);
         } else {
-            return hitRepository.findStats(periodStart, periodEnd, uris);
+            return hitRepository.findStats(start, end, uris);
         }
     }
 }
