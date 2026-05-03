@@ -1,9 +1,6 @@
 package ru.practicum.event.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.event.State;
 import ru.practicum.event.Location;
@@ -11,6 +8,7 @@ import ru.practicum.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,4 +30,6 @@ public class EventFullDto {
     private State state;
     private String title;
     private Long views;
+    private long likes;
+    private long dislikes;
 }
