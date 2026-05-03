@@ -6,9 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.event.Event;
 import ru.practicum.event.EventRepository;
 import ru.practicum.exception.NotFoundException;
+import ru.practicum.rating.dto.RatingStats;
 import ru.practicum.user.User;
 import ru.practicum.user.UserService;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,8 +52,36 @@ public class EventRatingServiceImpl implements EventRatingService {
 
 
     @Override
-    public long countRating(Long eventId, RatingType ratingType) {
-        return ratingRepository.countByEventIdAndRatingType(eventId, ratingType);
+    public Map<Long, RatingStats> getRatingsForEvents(List<Long> eventIds) {
+
+        List<Object[]> rows = ratingRepository.countRatingsForEvents(eventIds);
+
+        Map<Long, RatingStats> eventRatings = new HashMap<>();
+
+        for (Object[] row : rows) {
+            Long eventId = (Long) row[0];
+            RatingType type = (RatingType) row[1];
+            Long count = (Long) row[2];
+
+            eventRatings.putIfAbsent(eventId, new RatingStats(eventId));
+            RatingStats stats = eventRatings.get(eventId);
+
+            if (type == RatingType.LIKE) {
+                stats.addLikes(count);
+            } else {
+                stats.addDislikes(count);
+            }
+        }
+
+        return eventRatings;
+    }
+
+
+    @Override
+    public RatingStats getRatingForEvent(Long eventId) {
+        Map<Long, RatingStats> map = getRatingsForEvents(List.of(eventId));
+
+        return map.getOrDefault(eventId, new RatingStats(eventId));
     }
 
 

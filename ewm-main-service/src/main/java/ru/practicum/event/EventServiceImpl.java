@@ -25,7 +25,7 @@ import ru.practicum.participation_request.RequestService;
 import ru.practicum.participation_request.Status;
 import ru.practicum.participation_request.dto.ParticipationRequestDto;
 import ru.practicum.rating.EventRatingService;
-import ru.practicum.rating.RatingType;
+import ru.practicum.rating.dto.RatingStats;
 import ru.practicum.user.User;
 import ru.practicum.user.UserService;
 
@@ -217,14 +217,25 @@ public class EventServiceImpl implements EventService {
 
         List<Event> events = eventRepository.findUserEvents(userId, pageable);
 
-        return events.stream()
-                .map(event -> {
-                    EventFullDto dto = EventMapper.toDto(event);
-                    dto.setLikes(ratingService.countRating(event.getId(), RatingType.LIKE));
-                    dto.setDislikes(ratingService.countRating(event.getId(), RatingType.DISLIKE));
-                    return dto;
-                })
+        List<Long> eventIds = events.stream()
+                .map(Event::getId)
                 .toList();
+
+        Map<Long, RatingStats> ratings = ratingService.getRatingsForEvents(eventIds);
+        List<EventFullDto> result = new ArrayList<>();
+
+        for (Event event : events) {
+            EventFullDto dto = EventMapper.toDto(event);
+
+            RatingStats stats = ratings.getOrDefault(event.getId(), new RatingStats(event.getId()));
+
+            dto.setLikes(stats.getLikes());
+            dto.setDislikes(stats.getDislikes());
+
+            result.add(dto);
+        }
+
+        return result;
     }
 
 
@@ -236,9 +247,11 @@ public class EventServiceImpl implements EventService {
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new InitiatorRequiredException("Пользователь не является инициатором события");
         }
+        RatingStats rating = ratingService.getRatingForEvent(eventId);
+
         EventFullDto dto = EventMapper.toDto(event);
-        dto.setLikes(ratingService.countRating(event.getId(), RatingType.LIKE));
-        dto.setDislikes(ratingService.countRating(event.getId(), RatingType.DISLIKE));
+        dto.setLikes(rating.getLikes());
+        dto.setDislikes(rating.getDislikes());
 
         return dto;
     }
@@ -350,7 +363,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> getPublicEvents(String text, List<Long> categories, Boolean paid,
-            LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort,
+                                               LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort,
                                                int from, int size, HttpServletRequest request) {
 
         if (rangeStart != null && rangeEnd != null && rangeEnd.isBefore(rangeStart)) {
@@ -406,15 +419,21 @@ public class EventServiceImpl implements EventService {
 
         statsClient.saveHit(hit);
 
+        List<Long> eventIds = events.stream()
+                .map(Event::getId)
+                .toList();
+
+        Map<Long, RatingStats> ratings = ratingService.getRatingsForEvents(eventIds);
         List<EventShortDto> result = new ArrayList<>();
 
         for (Event event : events) {
             EventShortDto dto = EventMapper.toShortDto(event);
-            dto.setLikes(ratingService.countRating(event.getId(), RatingType.LIKE));
-            dto.setDislikes(ratingService.countRating(event.getId(), RatingType.DISLIKE));
 
-            Long views = viewsMap.getOrDefault("/events/" + event.getId(), 0L);
-            dto.setViews(views);
+            RatingStats stats = ratings.getOrDefault(event.getId(), new RatingStats(event.getId()));
+
+            dto.setLikes(stats.getLikes());
+            dto.setDislikes(stats.getDislikes());
+
             result.add(dto);
         }
 
@@ -437,9 +456,11 @@ public class EventServiceImpl implements EventService {
 
         Long views = stats.isEmpty() ? 0 : stats.getFirst().getHits();
 
+        RatingStats rating = ratingService.getRatingForEvent(eventId);
+
         EventFullDto dto = EventMapper.toDto(event);
-        dto.setLikes(ratingService.countRating(eventId, RatingType.LIKE));
-        dto.setDislikes(ratingService.countRating(eventId, RatingType.DISLIKE));
+        dto.setLikes(rating.getLikes());
+        dto.setDislikes(rating.getDislikes());
 
         dto.setViews(views);
 
